@@ -1,4 +1,4 @@
-namespace GameStore.Api.Dtos.CreateGameDto.cs;
+namespace GameStore.Api.Dtos;
 
 public record class CreateGameDto(
         // int Id,

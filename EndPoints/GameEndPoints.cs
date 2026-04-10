@@ -1,13 +1,14 @@
-namespace GameStore.Api.EndPoints.GameEndPoints.cs;
-using GameStore.Api.Dtos.GameDto.cs;
-using GameStore.Api.Dtos.CreateGameDto.cs;
-using GameStore.Api.Dtos.UpdateGameDto.cs;
+namespace GameStore.Api.EndPoints;
+using GameStore.Api.Dtos;
+// using GameStore.Api.Dtos.GameDto.cs;
+// using GameStore.Api.Dtos.CreateGameDto.cs;
+// using GameStore.Api.Dtos.UpdateGameDto.cs;
 
 
 
 public static class GameEndPoints// Static class that have extension methods
 {
-    var group = AppContext.MapGroup("/api/v1/game").WithTags("Game EndPoints");
+    // var group = AppContext.MapGroup("/api/v1/game").WithTags("Game EndPoints");
 
     private static readonly List<GameDto> games = [
     new (1, "Street Fighter II", "Fighting", 19.99m, new DateOnly(1992, 7, 15)),
@@ -23,7 +24,10 @@ public static class GameEndPoints// Static class that have extension methods
 ];
 
 public static RouteGroupBuilder MapGameEndPoints(this WebApplication app)
+
 {
+        var group = app.MapGroup("/api/v1/game")
+                       .WithTags("Game EndPoints");
         app.MapGet("/", () => "Backend is healthy and Running!");
         group.MapGet("/", () => games);
         group.MapGet("/{id}", (int id) => games.Find(g => g.Id == id) is GameDto game ? Results.Ok(game) : Results.NotFound());
