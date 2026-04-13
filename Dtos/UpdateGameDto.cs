@@ -1,4 +1,4 @@
-namespace GameStore.Api.Dtos.UpdateGameDto.cs;
+namespace GameStore.Api.Dtos;
 
 public record class UpdateGameDto(
         // int Id,
