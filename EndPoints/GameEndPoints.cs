@@ -1,8 +1,8 @@
 namespace GameStore.Api.EndPoints;
-using GameStore.Api.Dtos;
-// using GameStore.Api.Dtos.GameDto.cs;
-// using GameStore.Api.Dtos.CreateGameDto.cs;
-// using GameStore.Api.Dtos.UpdateGameDto.cs;
+using GameStore.Api.Data; 
+using GameStore.Api.Dtos;  
+using GameStore.Api.Entities;
+using GameStore.Api.Mapping;
 
 
 
@@ -31,12 +31,18 @@ public static RouteGroupBuilder MapGameEndPoints(this WebApplication app)
         app.MapGet("/", () => "Backend is healthy and Running!");
         group.MapGet("/", () => games);
         group.MapGet("/{id}", (int id) => games.Find(g => g.Id == id) is GameDto game ? Results.Ok(game) : Results.NotFound());
-        group.MapPost("/", (CreateGameDto newGame) =>
+        group.MapPost("/", (CreateGameDto newGame , GameStoreContext dbContext) =>
         {
-            GameDto game = new (games.Count + 1, newGame.Name, newGame.Genre, newGame.Price, newGame.ReleaseDate);
-            games.Add(game);
-            return Results.Created($"/api/v1/game/{game.Id}", game);
-        });
+
+            Game game = newGame.ToEntity();
+            game.Genre = dbContext.Genres.Find(newGame.GenreId);
+
+            dbContext.Games.Add(game);
+            dbContext.SaveChanges();
+
+            
+            return Results.Created($"/api/v1/game/{game.Id}", game.ToDto());
+        }).WithParameterValidation();
 
         group.MapPut("/{id}" , (int id , UpdateGameDto updateGame) =>
         {
